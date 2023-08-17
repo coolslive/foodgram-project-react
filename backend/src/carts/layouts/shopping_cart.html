@@ -1,0 +1,40 @@
+{% load unit_pluralize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <style>
+        div {
+            height: 1em;
+        }
+        .name,.amount_unit {
+            padding: 1px 0.5em;
+            background: #fff;
+            float: right;
+        }
+        .name {
+            float: left;
+            clear: both;
+        }
+        .line {
+            border-bottom: 1px dotted grey;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Список покупок.</h1>
+    {% for element in ingredients %}
+        <div class="name">{{ element.name|capfirst }}</div>
+        <div class="amount_unit">
+            {{ element.unit|unit_pluralize:element.amount }}
+        </div>
+        <div class="line"></div>
+    {% endfor %}
+</body>
+
+</html>

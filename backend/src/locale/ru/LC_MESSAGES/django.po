@@ -1,0 +1,282 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-16 01:40+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+",Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: api/filters.py:17
+msgid "favorited"
+msgstr ""
+
+#: api/filters.py:20
+msgid "in shopping cart"
+msgstr "в корзине"
+
+#: api/serializers.py:57
+msgid "A user with that username already exists."
+msgstr "Имя пользователя уже занято."
+
+#: api/serializers.py:88
+msgid "Invalid password."
+msgstr "Неверный пароль."
+
+#: api/serializers.py:125
+#, python-brace-format
+msgid "You are not subscribed to {author}."
+msgstr "Вы не подписаны на {author}."
+
+#: api/serializers.py:126
+#, python-brace-format
+msgid "You are already subscribed to {author}."
+msgstr "Вы уже подписаны на {author}."
+
+#: api/serializers.py:127
+msgid "Subscribing to yourself not allowed."
+msgstr "Вы не можете подписаться на самого себя."
+
+#: api/serializers.py:240
+#, python-brace-format
+msgid "{recipe} is not in the shopping cart."
+msgstr "{recipe} нет в корзине."
+
+#: api/serializers.py:241
+#, python-brace-format
+msgid "{recipe} is already in shopping cart."
+msgstr "{recipe} уже находиться в корзине."
+
+#: api/serializers.py:266
+#, python-brace-format
+msgid "User doesn't have {recipe} in favorites."
+msgstr "У пользователя нет в избранном {recipe}."
+
+#: api/serializers.py:267
+#, python-brace-format
+msgid "{recipe} is already in favorites."
+msgstr "{recipe} уже в избранном."
+
+#: api/views.py:94
+msgid "Me"
+msgstr "Мой профиль"
+
+#: api/views.py:98
+msgid "Set password"
+msgstr "Изменить пароль"
+
+#: api/views.py:104 users/models.py:73
+msgid "Subscriptions"
+msgstr "Подписки"
+
+#: api/views.py:108
+msgid "Subscribe"
+msgstr "Подписаться"
+
+#: carts/apps.py:11
+msgid "Carts"
+msgstr "Корзины"
+
+#: carts/models.py:9
+msgid "user"
+msgstr ""
+
+#: carts/models.py:12 recipes/models.py:14
+msgid "recipe"
+msgstr "рецепт"
+
+#: carts/models.py:16
+msgid "Shopping cart"
+msgstr "Корзина"
+
+#: carts/models.py:17
+msgid "Shopping carts"
+msgstr "Корзины"
+
+#: core/management/commands/load_ingredients.py:14
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: core/management/commands/load_ingredients.py:15
+msgid "Loaded {} units, {} ingredients!"
+msgstr "Загружено {} единиц измерений, {} ингредиентов!"
+
+#: recipes/admin.py:47 recipes/models.py:99
+msgid "color"
+msgstr "цвет"
+
+#: recipes/admin.py:80
+msgid "favorites"
+msgstr "избранное"
+
+#: recipes/admin.py:84
+msgid "tags"
+msgstr "теги"
+
+#: recipes/apps.py:11 recipes/models.py:41
+msgid "Recipes"
+msgstr "Рецепты"
+
+#: recipes/models.py:16
+msgid "description"
+msgstr "описание"
+
+#: recipes/models.py:18
+msgid "cooking time"
+msgstr "время приготовления"
+
+#: recipes/models.py:22
+msgid "image"
+msgstr "картинка"
+
+#: recipes/models.py:24
+msgid "publication date"
+msgstr "дата публикации"
+
+#: recipes/models.py:31
+msgid "author"
+msgstr "автор"
+
+#: recipes/models.py:40
+msgid "Recipe"
+msgstr "Рецепт"
+
+#: recipes/models.py:52
+msgid "amount"
+msgstr "количество"
+
+#: recipes/models.py:71
+msgid "unit"
+msgstr "единица измерения"
+
+#: recipes/models.py:73
+msgid "fist form"
+msgstr "первая форма"
+
+#: recipes/models.py:80
+msgid "second form"
+msgstr "вторая форма"
+
+#: recipes/models.py:88
+msgid "Measurement unit"
+msgstr "Единица измерения"
+
+#: recipes/models.py:89
+msgid "Measurement units"
+msgstr "Единицы измерения"
+
+#: recipes/models.py:98
+msgid "tag"
+msgstr "тег"
+
+#: recipes/models.py:100
+msgid "slug"
+msgstr "слаг"
+
+#: recipes/models.py:103
+msgid "Tag"
+msgstr "Тег"
+
+#: recipes/models.py:104
+msgid "Tags"
+msgstr "Теги"
+
+#: recipes/models.py:113
+msgid "ingredient"
+msgstr "ингредиент"
+
+#: recipes/models.py:118
+msgid "Ingredient"
+msgstr "Ингредиент"
+
+#: recipes/models.py:119
+msgid "Ingredients"
+msgstr "Ингредиенты"
+
+#: recipes/models.py:138
+msgid "Favorite recipe"
+msgstr "Избранный рецепт"
+
+#: recipes/models.py:139
+msgid "Favorite recipes"
+msgstr "Избранные рецепты"
+
+#: recipes/models.py:148
+#, python-brace-format
+msgid "{recipe} is {user}'s favorite recipe"
+msgstr "{recipe} в избранном у {user}"
+
+#: recipes/validators.py:7
+msgid "Enter a valid hex color, eg. #000000."
+msgstr "Введите верный цвет (hex), например #000000."
+
+#: recipes/validators.py:14
+msgid ""
+"Enter a valid recipe title, eg. \"Tea (black) with lime\".\n"
+"The title cannot start with numbers, parentheses, be numbers only or "
+"contains another non-alphabetic symbols."
+msgstr ""
+"Введите правильное название рецепта, например \"Чай (черный) с лимоном.\"\n"
+"Название не может начинаться с цифр, скобок, состоять только из цифр или "
+"содержать другие неалфавитные символы."
+
+#: users/apps.py:11 users/models.py:42
+msgid "Users"
+msgstr "Пользователи"
+
+#: users/models.py:11
+msgid "email address"
+msgstr ""
+
+#: users/models.py:13
+msgid "Required. 254 characters or fewer."
+msgstr ""
+
+#: users/models.py:16
+#, fuzzy
+#| msgid "Set password"
+msgid "password"
+msgstr "Изменить пароль"
+
+#: users/models.py:18 users/models.py:23 users/models.py:28
+msgid "Required. 150 characters or fewer."
+msgstr ""
+
+#: users/models.py:21
+msgid "first name"
+msgstr ""
+
+#: users/models.py:26
+msgid "last name"
+msgstr ""
+
+#: users/models.py:41
+msgid "User"
+msgstr "Пользователь"
+
+#: users/models.py:58
+msgid "Subscribe date"
+msgstr "Дата подписки"
+
+#: users/models.py:72
+msgid "Subscription"
+msgstr "Подписка"
+
+#: users/models.py:85
+#, python-brace-format
+msgid "{self.user} subscribed to {self.author}"
+msgstr "{self.user} подписан на {self.author}"
