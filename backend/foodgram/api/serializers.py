@@ -1,5 +1,10 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+
+from django.shortcuts import get_object_or_404
+
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -9,8 +14,6 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 from users.models import Subscription, User
 
 
@@ -163,24 +166,28 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = self.initial_data.get("ingredients")
         list = []
-        for i in ingredients:
-            amount = i["amount"]
+        for ingredient_one in ingredients:
+            amount = ingredient_one["amount"]
             if int(amount) < 1:
                 raise serializers.ValidationError(
                     {"amount": "Количество ингредиентов должно быть больше 0!"}
                 )
-            if i["id"] in list:
+            if ingredient_one["id"] in list:
                 raise serializers.ValidationError(
                     {"ingredient": "Ингредиенты должны быть уникальными!"}
                 )
-            list.append(i["id"])
+            list.append(ingredient_one["id"])
         return data
 
     def create_ingredients(self, ingredients, recipe):
-        for i in ingredients:
-            ingredient = Ingredient.objects.get(id=i["id"])
+        for ingredient_one in ingredients:
+            ingredient = Ingredient.objects.get_object_or_404(
+                id=ingredient_one["id"]
+            )
             RecipeIngredient.objects.create(
-                ingredient=ingredient, recipe=recipe, amount=i["amount"]
+                ingredient=ingredient,
+                recipe=recipe,
+                amount=ingredient_one["amount"],
             )
 
     def create_tags(self, tags, recipe):
@@ -192,7 +199,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         Creating recipes.
         Available only to authorized users.
         """
-
         ingredients = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
         author = self.context.get("request").user
@@ -206,18 +212,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         Changing the recipe.
         Available only to authors.
         """
-
-        RecipeTag.objects.filter(recipe=instance).delete()
-        RecipeIngredient.objects.filter(recipe=instance).delete()
-        ingredients = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
-        self.create_ingredients(ingredients, instance)
-        self.create_tags(tags, instance)
-        instance.name = validated_data.pop("name")
-        instance.text = validated_data.pop("text")
-        if validated_data.get("image"):
-            instance.image = validated_data.pop("image")
-        instance.cooking_time = validated_data.pop("cooking_time")
+        ingredients = validated_data.pop("ingredients")
+        instance = super().update(instance, validated_data)
+        instance.tags.clear()
+        instance.tags.set(tags)
+        instance.ingredients.clear()
+        self.create_ingredients_amounts(
+            recipe=instance, ingredients=ingredients
+        )
         instance.save()
         return instance
 
@@ -302,7 +305,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
         ).data
 
     def get_recipes_count(self, obj):
-        return Recipe.objects.filter(author=obj).count()
+        return obj.recipes.count()
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):

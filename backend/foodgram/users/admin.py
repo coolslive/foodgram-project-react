@@ -1,6 +1,5 @@
+from django.conf.settings import EMPTY
 from django.contrib import admin
-
-from foodgram.settings import EMPTY
 
 from .models import Subscription, User
 

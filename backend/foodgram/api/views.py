@@ -1,4 +1,15 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets
+from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -7,17 +18,7 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from users.models import Subscription, User
-
-from django.db.models import Sum
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
@@ -54,12 +55,8 @@ class SubscribeView(APIView):
     def delete(self, request, id):
         author = get_object_or_404(User, id=id)
         if Subscription.objects.filter(
-            user=request.user, author=author
-        ).exists():
-            subscription = get_object_or_404(
-                Subscription, user=request.user, author=author
-            )
-            subscription.delete()
+            user=request.user.id, author=author.id
+        ).delete():
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -148,7 +145,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         IsAuthorOrAdminOrReadOnly,
     ]
     pagination_class = CustomPagination
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.all().select_related("author")
     filter_backends = [
         DjangoFilterBackend,
     ]
@@ -191,16 +188,15 @@ class ShoppingCartView(APIView):
     def delete(self, request, id):
         recipe = get_object_or_404(Recipe, id=id)
         if ShoppingCart.objects.filter(
-            user=request.user, recipe=recipe
-        ).exists():
-            ShoppingCart.objects.filter(
-                user=request.user, recipe=recipe
-            ).delete()
+            user=request.user.id, recipe=recipe.id
+        ).delete():
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
+# Согласен стоит, мне уже большую часть хочется переделать, совершенству нет предела)
+# Могу оставить так? Время до сдачи итогового проекта оч мало осталось.
 def download_shopping_cart(request):
     ingredient_list = "Cписок покупок:"
     ingredients = (

@@ -53,7 +53,10 @@ class Recipe(models.Model):
         verbose_name="Автор рецепта",
     )
     ingredients = models.ManyToManyField(
-        Ingredient, through="RecipeIngredient", verbose_name="Ингредиенты"
+        Ingredient,
+        through="RecipeIngredient",
+        verbose_name="Ингредиенты",
+        related_name="ingredient",
     )
     image = models.ImageField("Изображение", upload_to="recipes/images/")
     name = models.CharField("Название рецепта", max_length=200)
@@ -86,10 +89,16 @@ class RecipeIngredient(models.Model):
     """A model of the relationship between ingredients and recipes."""
 
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, verbose_name="Рецепт"
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="Рецепт",
+        related_name="recipe",
     )
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, verbose_name="Ингредиент"
+        Ingredient,
+        on_delete=models.CASCADE,
+        verbose_name="Ингредиент",
+        related_name="ingredient",
     )
     amount = models.IntegerField(
         "Количество", validators=[MinValueValidator(1)]
@@ -108,9 +117,14 @@ class RecipeTag(models.Model):
     """The model of the tag and recipe relationship."""
 
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, verbose_name="Рецепт"
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="Рецепт",
+        related_name="recipe",
     )
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name="Тег")
+    tag = models.ForeignKey(
+        Tag, on_delete=models.CASCADE, verbose_name="Тег", related_name="tag"
+    )
 
     class Meta:
         constraints = [
