@@ -1,6 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -10,7 +9,6 @@ from rest_framework.decorators import action
 
 from core.services import create_shoping_list
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -18,7 +16,6 @@ from recipes.models import (
     Favorite,
     Ingredient,
     Recipe,
-    RecipeIngredient,
     ShoppingCart,
     Tag,
 )
@@ -212,14 +209,15 @@ class ShoppingCartView(APIView):
         )
         response["Content-Disposition"] = f"attachment; filename={filename}"
         return response
-# Даное ревью мне нужно для подтверждение моей мысли, в печке ответа не дали.
-# В виду того что замечание от тебя, прошу дать отмашку верно мылю или нет.
-# По выносу отдельного метода натолкнула меня на мысль переделать проект,
-# Начал создавать отдельную папку ядро, в котором будут обрабатываться создание файла,
-# и иные сервисные функции.
-# Причина в том что я начинал делать с целью что бы просто работало, а в ревью
-# мне предлагаешь интересные изменения но которые на фоне всего проекта смотрятся как
-# колеса от мерса на автовазе, в добавок гуглением нашел более изящьные исполнение.
+# Даное ревью мне нужно для подтверждение моей мысли, 
+# в печке ответа не дали.
+# В виду того что замечание от тебя, прошу дать отмашку 
+# верно мылю или нет. И могу ли приступить.
 # 
-# Надеюсь моя мысль понятна, проект буду модернизировать.
-# Далее предыдущие правки не правил. Ты не против переделки?
+# По выносу отдельного метода натолкнула меня на мысль 
+# переделать проект, и вот почему -
+# Считаю что правельнее будет создавать отдельную
+# папку ядро, в котором будут обрабатываться 
+# создание файла и иные сервисные функции.
+# Есть мнение использовать миксины.
+# и еще несколько сопутствующих переделок.
