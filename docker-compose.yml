@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:13.0-alpine
+    env_file:
+      - ./.env
+
+  backend:
+    build: ./backend/foodgram
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+    restart: always
+
+
+
+  nginx:
+    image: nginx:1.19.3
+    ports:
+      - "80:80"

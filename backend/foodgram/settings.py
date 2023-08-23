@@ -2,6 +2,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+DATE_TIME_FORMAT = "%d/%m/%Y %H:%M"
 
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-secret-key")
 

@@ -5,7 +5,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.decorators import action
 
+from core.services import create_shoping_list
+from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -194,26 +198,28 @@ class ShoppingCartView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-# Могу оставить так?)
-# Время до сдачи итогового проекта оч мало осталось.
-def download_shopping_cart(request):
-    ingredient_list = "Cписок покупок:"
-    ingredients = (
-        RecipeIngredient.objects.filter(
-            recipe__shopping_cart__user=request.user
+    @action(methods=("get",), detail=False)
+    def download_shopping_cart(self, request: WSGIRequest) -> Response:
+        """Downloads a file with a shopping list."""
+        user = self.request.user
+        if not user.carts.exists():
+            return Response(status=HTTP_400_BAD_REQUEST)
+
+        filename = f"{user.username}_shopping_list.txt"
+        shopping_list = create_shoping_list(user)
+        response = HttpResponse(
+            shopping_list, content_type="text.txt; charset=utf-8"
         )
-        .values("ingredient__name", "ingredient__measurement_unit")
-        .annotate(amount=Sum("amount"))
-    )
-    for num, i in enumerate(ingredients):
-        ingredient_list += (
-            f"\n{i['ingredient__name']} - "
-            f"{i['amount']} {i['ingredient__measurement_unit']}"
-        )
-        if num < ingredients.count() - 1:
-            ingredient_list += ", "
-    file = "shopping_list"
-    response = HttpResponse(ingredient_list, "Content-Type: application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="{file}.pdf"'
-    return response
+        response["Content-Disposition"] = f"attachment; filename={filename}"
+        return response
+# Даное ревью мне нужно для подтверждение моей мысли, в печке ответа не дали.
+# В виду того что замечание от тебя, прошу дать отмашку верно мылю или нет.
+# По выносу отдельного метода натолкнула меня на мысль переделать проект,
+# Начал создавать отдельную папку ядро, в котором будут обрабатываться создание файла,
+# и иные сервисные функции.
+# Причина в том что я начинал делать с целью что бы просто работало, а в ревью
+# мне предлагаешь интересные изменения но которые на фоне всего проекта смотрятся как
+# колеса от мерса на автовазе, в добавок гуглением нашел более изящьные исполнение.
+# 
+# Надеюсь моя мысль понятна, проект буду модернизировать.
+# Далее предыдущие правки не правил. Ты не против переделки?
