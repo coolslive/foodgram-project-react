@@ -6,7 +6,7 @@ from django.db.models import F, Sum
 from foodgram.settings import DATE_TIME_FORMAT
 
 if TYPE_CHECKING:
-#   from recipes.models import Ingredient
+    #   from recipes.models import Ingredient
     from users.models import MyUser
 
 
