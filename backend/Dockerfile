@@ -1,10 +1,18 @@
-FROM python:3.7-slim
+FROM python:3.11-slim
+
+RUN apt-get update &&\
+    apt-get upgrade -y &&\
+    apt-get install -y libpq-dev gcc netcat-traditional
 
 WORKDIR /app
 
-COPY foodgram .
+COPY requirements.txt ./
 
-RUN pip3 install -r requirements.txt --no-cache-dir
+RUN pip install -U pip &&\
+    pip install -r requirements.txt --no-cache-dir
+	
+COPY . .
 
-#CMD ["python", "manage.py", "runserver", "0:8000"]
-CMD ["gunicorn", "--bind", "foodgram.wsgi:application", "0:8000" ]
+RUN chmod +x run_app.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]

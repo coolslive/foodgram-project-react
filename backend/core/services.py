@@ -1,19 +1,38 @@
 from datetime import datetime as dt
 from typing import TYPE_CHECKING
+from urllib.parse import unquote
 
 from django.apps import apps
 from django.db.models import F, Sum
+
 from foodgram.settings import DATE_TIME_FORMAT
+from recipes.models import AmountIngredient, Recipe
 
 if TYPE_CHECKING:
-    #   from recipes.models import Ingredient
+    from recipes.models import Ingredient
     from users.models import MyUser
+
+
+def recipe_ingredients_set(
+    recipe: Recipe, ingredients: dict[int, tuple["Ingredient", int]]
+) -> None:
+    """Records the ingredients embedded in the recipe."""
+    objs = []
+
+    for ingredient, amount in ingredients.values():
+        objs.append(
+            AmountIngredient(
+                recipe=recipe, ingredients=ingredient, amount=amount
+            )
+        )
+
+    AmountIngredient.objects.bulk_create(objs)
 
 
 def create_shoping_list(user: "MyUser") -> str:
     """List of ingredients to buy."""
     shopping_list = [
-        f"Список покупок для:\n\n{user.first_name}\n"
+        f"Список покупок :\n\n{user.first_name}\n"
         f"{dt.now().strftime(DATE_TIME_FORMAT)}\n"
     ]
     Ingredient = apps.get_model("recipes", "Ingredient")
@@ -29,3 +48,14 @@ def create_shoping_list(user: "MyUser") -> str:
     shopping_list.extend(ing_list)
     shopping_list.append("\nПосчитано в Foodgram")
     return "\n".join(shopping_list)
+
+def maybe_incorrect_layout(url_string: str) -> str:
+    """Changing words with an incorrectly selected layout."""
+    equals = str.maketrans(
+        "qwertyuiop[]asdfghjkl;'zxcvbnm,./",
+        "йцукенгшщзхъфывапролджэячсмитьбю.",
+    )
+    if url_string.startswith("%"):
+        return unquote(url_string).lower()
+
+    return url_string.translate(equals).lower()

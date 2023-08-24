@@ -2,48 +2,30 @@ from rest_framework.routers import DefaultRouter
 
 from django.urls import include, path
 
-from .views import (
-    FavoriteView,
+from api.views import (
+    BaseAPIRootView,
     IngredientViewSet,
     RecipeViewSet,
-    ShoppingCartView,
-    ShowSubscriptionsView,
-    SubscribeView,
     TagViewSet,
-    download_shopping_cart,
+    UserViewSet,
 )
 
 app_name = "api"
 
-router = DefaultRouter()
 
-router.register("ingredients", IngredientViewSet, basename="ingredients")
-router.register("recipes", RecipeViewSet, basename="recipes")
-router.register("tags", TagViewSet, basename="tags")
+class RuDefaultRouter(DefaultRouter):
+    """Description of the API homepage in Russian."""
 
-urlpatterns = [
-    path(
-        "recipes/download_shopping_cart/",
-        download_shopping_cart,
-        name="download_shopping_cart",
-    ),
-    path(
-        "recipes/<int:id>/shopping_cart/",
-        ShoppingCartView.as_view(),
-        name="shopping_cart",
-    ),
-    path(
-        "recipes/<int:id>/favorite/", FavoriteView.as_view(), name="favorite"
-    ),
-    path(
-        "users/<int:id>/subscribe/", SubscribeView.as_view(), name="subscribe"
-    ),
-    path(
-        "users/subscriptions/",
-        ShowSubscriptionsView.as_view(),
-        name="subscriptions",
-    ),
-    path("auth/", include("djoser.urls.authtoken")),
-    path("", include("djoser.urls")),
+    APIRootView = BaseAPIRootView
+
+
+router = RuDefaultRouter()
+router.register("tags", TagViewSet, "tags")
+router.register("ingredients", IngredientViewSet, "ingredients")
+router.register("recipes", RecipeViewSet, "recipes")
+router.register("users", UserViewSet, "users")
+
+urlpatterns = (
     path("", include(router.urls)),
-]
+    path("auth/", include("djoser.urls.authtoken")),
+)

@@ -1,26 +1,38 @@
-from django.conf.settings import EMPTY
-from django.contrib import admin
+from django.contrib.admin import register
+from django.contrib.auth.admin import UserAdmin
 
-from .models import Subscription, User
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ["username", "email", "first_name", "last_name"]
-    search_fields = ["username", "email"]
-    list_filter = ["username", "email"]
-    ordering = ["username"]
-    empty_value_display = EMPTY
+from users.models import MyUser
 
 
-@admin.register(Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ["user", "author"]
-    search_fields = [
-        "author__username",
-        "author__email",
-        "user__username",
-        "user__email",
-    ]
-    list_filter = ["author__username", "user__username"]
-    empty_value_display = EMPTY
+@register(MyUser)
+class MyUserAdmin(UserAdmin):
+    list_display = (
+        "is_active",
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+    )
+    fields = (
+        ("is_active",),
+        (
+            "username",
+            "email",
+        ),
+        (
+            "first_name",
+            "last_name",
+        ),
+    )
+    fieldsets = []
+
+    search_fields = (
+        "username",
+        "email",
+    )
+    list_filter = (
+        "is_active",
+        "first_name",
+        "email",
+    )
+    save_on_top = True
