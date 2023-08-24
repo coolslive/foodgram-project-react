@@ -49,6 +49,7 @@ def create_shoping_list(user: "MyUser") -> str:
     shopping_list.append("\nПосчитано в Foodgram")
     return "\n".join(shopping_list)
 
+
 def maybe_incorrect_layout(url_string: str) -> str:
     """Changing words with an incorrectly selected layout."""
     equals = str.maketrans(
