@@ -214,7 +214,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         """
         tags = validated_data.pop("tags")
         ingredients = validated_data.pop("ingredients")
-        
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
