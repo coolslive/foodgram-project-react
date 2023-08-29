@@ -1,12 +1,13 @@
+import io
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -56,7 +57,7 @@ class SubscribeView(APIView):
         author = get_object_or_404(User, id=id)
         if Subscription.objects.filter(
             user=request.user.id, author=author.id
-        ).delete():
+        ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -71,7 +72,7 @@ class ShowSubscriptionsView(ListAPIView):
 
     def get(self, request):
         user = request.user
-        queryset = User.objects.filter(author__user=user)
+        queryset = User.objects.filter(author__user=user).annotate(get_recipes_count=Count("author__recipe"))
         page = self.paginate_queryset(queryset)
         serializer = ShowSubscriptionsSerializer(
             page, many=True, context={"request": request}
@@ -104,8 +105,9 @@ class FavoriteView(APIView):
 
     def delete(self, request, id):
         recipe = get_object_or_404(Recipe, id=id)
-        if Favorite.objects.filter(user=request.user, recipe=recipe).exists():
-            Favorite.objects.filter(user=request.user, recipe=recipe).delete()
+        if Favorite.objects.filter(
+            user=request.user.id, recipe=recipe.id
+        ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -118,7 +120,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     ]
     pagination_class = None
     serializer_class = TagSerializer
-    queryset = Tag.objects.all().select_related("tag")
+    queryset = Tag.objects.all()
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -129,7 +131,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     ]
     pagination_class = None
     serializer_class = IngredientSerializer
-    queryset = Ingredient.objects.all().select_related("ingredient")
+    queryset = Ingredient.objects.all()
     filter_backends = [
         IngredientFilter,
     ]
@@ -145,7 +147,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         IsAuthorOrAdminOrReadOnly,
     ]
     pagination_class = CustomPagination
-    queryset = Recipe.objects.all().select_related("author")
+    queryset = Recipe.objects.all().select_related("author").prefetch_related("ingredients", "tags")
     filter_backends = [
         DjangoFilterBackend,
     ]
@@ -189,29 +191,35 @@ class ShoppingCartView(APIView):
         recipe = get_object_or_404(Recipe, id=id)
         if ShoppingCart.objects.filter(
             user=request.user.id, recipe=recipe.id
-        ).delete():
+        ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-def download_shopping_cart(request):
-    ingredient_list = "Cписок покупок:"
-    ingredients = (
-        RecipeIngredient.objects.filter(
-            recipe__shopping_cart__user=request.user
+class DownloadShopingCartView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ["get"]
+    pagination_class = None
+
+    def get_cart(self, request):
+        ingredients = (
+            RecipeIngredient.objects.filter(
+                recipe__shopping_cart__user=request.user
+            )
+            .values("ingredient__name", "ingredient__measurement_unit")
+            .annotate(amount=Sum("amount"))
         )
-        .values("ingredient__name", "ingredient__measurement_unit")
-        .annotate(amount=Sum("amount"))
-    )
-    for num, i in enumerate(ingredients):
-        ingredient_list += (
-            f"\n{i['ingredient__name']} - "
-            f"{i['amount']} {i['ingredient__measurement_unit']}"
-        )
-        if num < ingredients.count() - 1:
-            ingredient_list += ", "
-    file = "shopping_list"
-    response = HttpResponse(ingredient_list, "Content-Type: application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="{file}.pdf"'
-    return response
+        ingredient_list = self.write_to_ingredient(ingredients)
+        response = HttpResponse(ingredient_list, "Content-Type: application/pdf")
+        return response
+    def write_to_ingredient(self, ingredients):
+        in_memory = io.StartingIO()
+        for num, ingredient in enumerate(ingredients):
+            in_memory.write(
+                f"\n{ingredient['ingredient__name']} - "
+                f"{ingredient['amount']} {ingredient['ingredient__measurement_unit']}"
+            )
+            if num < ingredients.count() - 1:
+                ingredient_list += ", "
+        return in_memory.getvalue()
+    

@@ -302,9 +302,6 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
             recipes, many=True, context={"request": request}
         ).data
 
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
-
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     """Subscription Serializer."""
