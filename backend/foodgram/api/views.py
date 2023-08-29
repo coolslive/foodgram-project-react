@@ -226,7 +226,8 @@ class DownloadShopingCartView(APIView):
         for num, ingredient in enumerate(ingredients):
             ingredient_list.write(
                 f"\n{ingredient['ingredient__name']} - "
-                f"{ingredient['amount']} {ingredient['ingredient__measurement_unit']}"
+                f"{ingredient['amount']}" 
+                f"{ingredient['ingredient__measurement_unit']}"
             )
             if num < ingredients.count() - 1:
                 ingredient_list += ", "
