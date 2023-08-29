@@ -101,8 +101,7 @@ class RecipeIngredient(models.Model):
         related_name="ingredient",
     )
     amount = models.SmallIntegerField(
-        verbose_name='Количество',
-        validators=[MinValueValidator(1)]
+        verbose_name="Количество", validators=[MinValueValidator(1)]
     )
 
     class Meta:

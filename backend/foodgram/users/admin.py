@@ -1,4 +1,5 @@
 from typing import Any
+
 from django.conf import settings
 from django.contrib import admin
 from django.db.models.query import QuerySet
@@ -16,8 +17,7 @@ class UserAdmin(admin.ModelAdmin):
     empty_value_display = settings.EMPTY
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
-            return super().get_queryset(request).select_related("author", "user")
-    
+        return super().get_queryset(request).select_related("author", "user")
 
 
 @admin.register(Subscription)
@@ -33,6 +33,9 @@ class SubscriptionAdmin(admin.ModelAdmin):
     empty_value_display = settings.EMPTY
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
-        return super().get_queryset(request).select_related("author").prefetch_related(
-            "tags", "ingredients"
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("author")
+            .prefetch_related("tags", "ingredients")
         )

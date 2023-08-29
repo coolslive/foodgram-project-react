@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from django.db.models import Sum, Count
+from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -72,7 +72,9 @@ class ShowSubscriptionsView(ListAPIView):
 
     def get(self, request):
         user = request.user
-        queryset = User.objects.filter(author__user=user).annotate(get_recipes_count=Count("author__recipe"))
+        queryset = User.objects.filter(author__user=user).annotate(
+            get_recipes_count=Count("author__recipe")
+        )
         page = self.paginate_queryset(queryset)
         serializer = ShowSubscriptionsSerializer(
             page, many=True, context={"request": request}
@@ -147,7 +149,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         IsAuthorOrAdminOrReadOnly,
     ]
     pagination_class = CustomPagination
-    queryset = Recipe.objects.all().select_related("author").prefetch_related("ingredients", "tags")
+    queryset = (
+        Recipe.objects.all()
+        .select_related("author")
+        .prefetch_related("ingredients", "tags")
+    )
     filter_backends = [
         DjangoFilterBackend,
     ]
@@ -210,16 +216,18 @@ class DownloadShopingCartView(APIView):
             .annotate(amount=Sum("amount"))
         )
         ingredient_list = self.write_to_ingredient(ingredients)
-        response = HttpResponse(ingredient_list, "Content-Type: application/pdf")
+        response = HttpResponse(
+            ingredient_list, "Content-Type: application/pdf"
+        )
         return response
+
     def write_to_ingredient(self, ingredients):
-        in_memory = io.StartingIO()
+        ingredient_list = io.StartingIO()
         for num, ingredient in enumerate(ingredients):
-            in_memory.write(
+            ingredient_list.write(
                 f"\n{ingredient['ingredient__name']} - "
                 f"{ingredient['amount']} {ingredient['ingredient__measurement_unit']}"
             )
             if num < ingredients.count() - 1:
                 ingredient_list += ", "
-        return in_memory.getvalue()
-    
+        return ingredient_list.getvalue()
