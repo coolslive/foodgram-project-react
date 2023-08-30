@@ -53,10 +53,9 @@ class SubscribeView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id):
-        author = get_object_or_404(User, id=id)
+    def delete(self, request):
         if Subscription.objects.filter(
-            user=request.user.id, author=author.id
+            user=request.user.id
         ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -106,9 +105,8 @@ class FavoriteView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        recipe = get_object_or_404(Recipe, id=id)
         if Favorite.objects.filter(
-            user=request.user.id, recipe=recipe.id
+            user=request.user.id
         ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -193,10 +191,9 @@ class ShoppingCartView(APIView):
                 )
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id):
-        recipe = get_object_or_404(Recipe, id=id)
+    def delete(self, request):
         if ShoppingCart.objects.filter(
-            user=request.user.id, recipe=recipe.id
+            user=request.user.id
         ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)

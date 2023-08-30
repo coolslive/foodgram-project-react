@@ -10,7 +10,7 @@ from .views import (
     ShowSubscriptionsView,
     SubscribeView,
     TagViewSet,
-    download_shopping_cart,
+    DownloadShopingCartView,
 )
 
 app_name = "api"
@@ -24,7 +24,7 @@ router.register("tags", TagViewSet, basename="tags")
 urlpatterns = [
     path(
         "recipes/download_shopping_cart/",
-        download_shopping_cart,
+        DownloadShopingCartView,
         name="download_shopping_cart",
     ),
     path(

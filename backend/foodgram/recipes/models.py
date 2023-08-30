@@ -49,7 +49,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="recipes",
+        related_name="recipes_model",
         verbose_name="Автор рецепта",
     )
     ingredients = models.ManyToManyField(
@@ -92,13 +92,13 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name="Рецепт",
-        related_name="recipe",
+        related_name="recipe_ingredient_model",
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name="Ингредиент",
-        related_name="ingredient",
+        related_name="ingredient_model",
     )
     amount = models.SmallIntegerField(
         verbose_name="Количество", validators=[MinValueValidator(1)]
@@ -120,7 +120,7 @@ class RecipeTag(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name="Рецепт",
-        related_name="recipe",
+        related_name="recipe_tag_model",
     )
     tag = models.ForeignKey(
         Tag, on_delete=models.CASCADE, verbose_name="Тег", related_name="tag"

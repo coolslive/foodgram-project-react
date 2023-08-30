@@ -1,4 +1,8 @@
+from typing import Any
+
 from django.contrib import admin
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
 
 from foodgram.settings import EMPTY
 
@@ -14,6 +18,11 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "recipe"]
     search_fields = ["user__username", "user__email"]
     empty_value_display = EMPTY
+    
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+        return (
+            super().get_queryset(request).select_related("user", "recipe")
+        )
 
 
 @admin.register(Ingredient)
@@ -33,6 +42,13 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def favorites(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
+    
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+        return (
+            super().get_queryset(request).select_related("author").prefetch_related(
+            "tags", "ingredient"
+            )
+        )
 
 
 @admin.register(ShoppingCart)
@@ -40,6 +56,11 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "recipe"]
     search_fields = ["user__username", "user__email"]
     empty_value_display = EMPTY
+
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+        return (
+            super().get_queryset(request).select_related("user", "recipe")
+        )
 
 
 @admin.register(Tag)
