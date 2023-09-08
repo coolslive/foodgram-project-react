@@ -44,5 +44,14 @@ sudo docker-compose exec server part in python manage.py loadmodels --path 'reci
 sudo docker-compose exec python backend manage.py loadmodels --path 'recipes/data/tags.json'
 ```
 
+### Access for verification:
+
+``
+IP - 158.160.76.7
+https://kiti1992-kiti.ddns.net
+Login - admin
+Pass - admin
+``
+
 ### Author:
 **Vyacheslav Erlich**
