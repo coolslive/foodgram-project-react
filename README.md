@@ -1,4 +1,4 @@
-# Foodgram - A story about cooking!!!!1
+# Foodgram - A story about cooking!!!
 
 
 ### What is there:
