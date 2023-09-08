@@ -18,7 +18,7 @@
 git clone https://github.com/coolslive/foodgram-project-react.git
 ``
 2. Prepare the server:
-`
+``
 scp docker-compose.yml <username>@<host>:/home page/<username>/
 scp nginx.conf <username>@<host>:/home page/<username>/
 scp .env <username>@<host>:/home page/<username>/
@@ -42,7 +42,7 @@ sudo docker-compose exec python server part manage.py collectstatic -without inp
 ``
 sudo docker-compose exec server part in python manage.py loadmodels --path 'recipes/data/ingredients.json'
 sudo docker-compose exec python backend manage.py loadmodels --path 'recipes/data/tags.json'
-```
+``
 
 ### Access for verification:
 
