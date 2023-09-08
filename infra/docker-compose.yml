@@ -1,4 +1,10 @@
 version: '3.3'
+
+volumes:
+  postgres_data:
+  static_value:
+  media_value:
+
 services:
   db:
     image: postgres:13.0-alpine
@@ -8,7 +14,8 @@ services:
       - ./.env
 
   backend:
-    image: coolslive/backend:v1
+    container_name: foodgram_backend
+    image: coolslive/foodgram_backend
     volumes:
       - ../static/:/app/static/
       - ../media/:/app/media/recipes/
@@ -19,7 +26,8 @@ services:
     restart: always
 
   frontend:
-    image: coolslive/frontend:v1
+    container_name: foodgram_frontend
+    image: coolslive/foodgram_frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -28,7 +36,7 @@ services:
   nginx:
     image: nginx:1.19.3
     ports:
-      - "80:80"
+      - "9000:80"
     volumes:
       - ../static/:/var/html/static/
       - ../media/:/var/html/media/recipes/
@@ -39,8 +47,3 @@ services:
       - backend
       - frontend
     restart: always
-
-volumes:
-  postgres_data:
-  static_value:
-  media_value:

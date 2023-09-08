@@ -53,12 +53,12 @@ class SubscribeView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    def delete(self, request, id):
         if Subscription.objects.filter(
-            user=request.user.id
+            user=request.user.id, author=id
         ).delete()[0]:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ShowSubscriptionsView(ListAPIView):
@@ -72,7 +72,7 @@ class ShowSubscriptionsView(ListAPIView):
     def get(self, request):
         user = request.user
         queryset = User.objects.filter(author__user=user).annotate(
-            get_recipes_count=Count("author__recipe")
+            recipes_count=Count("recipes_model")
         )
         page = self.paginate_queryset(queryset)
         serializer = ShowSubscriptionsSerializer(
@@ -106,7 +106,7 @@ class FavoriteView(APIView):
 
     def delete(self, request, id):
         if Favorite.objects.filter(
-            user=request.user.id
+            user=request.user.id, recipe=request.recipe
         ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -193,7 +193,7 @@ class ShoppingCartView(APIView):
 
     def delete(self, request):
         if ShoppingCart.objects.filter(
-            user=request.user.id
+            user=request.user.id, recipe=request.recipe
         ).delete()[0]:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -204,7 +204,7 @@ class DownloadShopingCartView(APIView):
     http_method_names = ["get"]
     pagination_class = None
 
-    def get_cart(self, request):
+    def get(self, request):
         ingredients = (
             RecipeIngredient.objects.filter(
                 recipe__shopping_cart__user=request.user
@@ -212,20 +212,20 @@ class DownloadShopingCartView(APIView):
             .values("ingredient__name", "ingredient__measurement_unit")
             .annotate(amount=Sum("amount"))
         )
-        ingredient_list = self.write_to_ingredient(ingredients)
-        response = HttpResponse(
-            ingredient_list, "Content-Type: application/pdf"
-        )
+        ingredient_list = self.write_to_buffer(ingredients=ingredients)
+        response = HttpResponse(ingredient_list, content_type="StringIO/plain")
         return response
 
-    def write_to_ingredient(self, ingredients):
-        ingredient_list = io.StartingIO()
-        for num, ingredient in enumerate(ingredients):
+    def write_to_buffer(self, ingredients):
+        ingredient_list = io.StringIO()
+        for ingredient in ingredients:
             ingredient_list.write(
-                f"\n{ingredient['ingredient__name']} - "
-                f"{ingredient['amount']}"
-                f"{ingredient['ingredient__measurement_unit']}"
+                "{name}({measurement_unit}) - {amount}\n".format(
+                    name=ingredient.get("ingredient__name"),
+                    measurement_unit=ingredient.get(
+                        "ingredient__measurement_unit"
+                    ),
+                    amount=ingredient.get("amount"),
+                )
             )
-            if num < ingredients.count() - 1:
-                ingredient_list += ", "
         return ingredient_list.getvalue()

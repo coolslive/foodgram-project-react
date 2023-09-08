@@ -181,9 +181,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
-            ingredient = get_object_or_404(id=ingredient["id"])
+            ingredient_one = get_object_or_404(Ingredient, id=ingredient["id"])
             RecipeIngredient.objects.create(
-                ingredient=ingredient,
+                ingredient=ingredient_one,
                 recipe=recipe,
                 amount=ingredient["amount"],
             )
@@ -215,9 +215,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        self.create_ingredients_amounts(
-            recipe=instance, ingredients=ingredients
-        )
+        self.create_ingredients(recipe=instance, ingredients=ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
@@ -265,7 +263,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
 
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField()
 
     class Meta:
         model = User
@@ -278,6 +276,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
             "is_subscribed",
             "recipes",
             "recipes_count",
+            "recipes_model",
         ]
 
     def get_is_subscribed(self, obj):

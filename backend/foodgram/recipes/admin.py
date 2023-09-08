@@ -46,7 +46,7 @@ class RecipeAdmin(admin.ModelAdmin):
             super()
             .get_queryset(request)
             .select_related("author")
-            .prefetch_related("tags", "ingredient")
+            .prefetch_related("tags", "ingredients")
         )
 
 

@@ -16,9 +16,6 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ["username"]
     empty_value_display = settings.EMPTY
 
-    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
-        return super().get_queryset(request).select_related("author", "user")
-
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
@@ -33,6 +30,4 @@ class SubscriptionAdmin(admin.ModelAdmin):
     empty_value_display = settings.EMPTY
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
-        return (
-            super().get_queryset(request).select_related("author", "user")
-        )
+        return super().get_queryset(request).select_related("author", "user")

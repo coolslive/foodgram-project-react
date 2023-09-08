@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from django.urls import include, path
 
 from .views import (
+    DownloadShopingCartView,
     FavoriteView,
     IngredientViewSet,
     RecipeViewSet,
@@ -10,7 +11,6 @@ from .views import (
     ShowSubscriptionsView,
     SubscribeView,
     TagViewSet,
-    DownloadShopingCartView,
 )
 
 app_name = "api"
@@ -24,7 +24,7 @@ router.register("tags", TagViewSet, basename="tags")
 urlpatterns = [
     path(
         "recipes/download_shopping_cart/",
-        DownloadShopingCartView,
+        DownloadShopingCartView.as_view(),
         name="download_shopping_cart",
     ),
     path(
