@@ -49,7 +49,7 @@ sudo docker-compose exec python backend manage.py loadmodels --path 'recipes/dat
 ``
 IP - 158.160.76.7
 https://kiti1992-kiti.ddns.net
-Login - admin
+Login - admin@admin.ru
 Pass - admin
 ``
 

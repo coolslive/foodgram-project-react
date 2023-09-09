@@ -56,7 +56,7 @@ class SubscribeView(APIView):
     def delete(self, request, id):
         if Subscription.objects.filter(
             user=request.user.id, author=id
-        ).delete()[0]:
+        ).delete()[0] == 0:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -106,10 +106,10 @@ class FavoriteView(APIView):
 
     def delete(self, request, id):
         if Favorite.objects.filter(
-            user=request.user.id, recipe=request.recipe
-        ).delete()[0]:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            user=request.user.id, recipe=id
+        ).delete()[0] == 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -191,12 +191,12 @@ class ShoppingCartView(APIView):
                 )
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    def delete(self, request, id):
         if ShoppingCart.objects.filter(
-            user=request.user.id, recipe=request.recipe
-        ).delete()[0]:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            user=request.user, recipe=id
+        ).delete()[0] == 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DownloadShopingCartView(APIView):
