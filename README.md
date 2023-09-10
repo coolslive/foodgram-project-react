@@ -1,4 +1,5 @@
-# Foodgram - A story about cooking!!
+
+# Foodgram.
 
 
 ### What is there:
@@ -8,6 +9,7 @@
 - Watch what your friends and colleagues have added
 
 ### Stack:
+
 - Python
 - Django
 - Docker
@@ -46,7 +48,6 @@ sudo docker-compose exec python backend manage.py loadmodels --path 'recipes/dat
 ### Access for verification:
 
 ```
-IP - 158.160.76.7
 https://kiti1992-kiti.ddns.net
 Login - admin@admin.ru
 Pass - admin
