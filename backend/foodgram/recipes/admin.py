@@ -16,7 +16,7 @@ class IngredientsInLine(admin.TabularInline):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "recipe"]
-    list_display_links = ["user"]
+    list_display_links = ["recipe"]
     search_fields = ["user__username", "user__email"]
     empty_value_display = EMPTY
 
