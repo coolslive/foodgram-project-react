@@ -16,7 +16,7 @@ class IngredientsInLine(admin.TabularInline):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "recipe"]
-    list_display_links = ["id", "user", "recipe"]
+    list_display_links = ["user"]
     search_fields = ["user__username", "user__email"]
     empty_value_display = EMPTY
 
@@ -27,7 +27,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "measurement_unit"]
-    list_display_links = ["id", "name", "measurement_unit"]
+    list_display_links = ["name"]
     search_fields = ["name"]
     empty_value_display = EMPTY
 
@@ -35,7 +35,7 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "author", "favorites"]
-    list_display_links = ["id", "name", "author", "favorites"]
+    list_display_links = ["name"]
     search_fields = ["name", "author__username"]
     list_filter = ["author", "tags"]
     empty_value_display = EMPTY
@@ -56,7 +56,7 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "recipe"]
-    list_display_links = ["id", "user", "recipe"]
+    list_display_links = ["recipe"]
     search_fields = ["user__username", "user__email"]
     empty_value_display = EMPTY
 
@@ -67,6 +67,6 @@ class ShoppingCartAdmin(admin.ModelAdmin):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "color", "slug"]
-    list_display_links = ["id", "name", "color", "slug"]
+    list_display_links = ["name"]
     search_fields = ["name", "slug"]
     empty_value_display = EMPTY

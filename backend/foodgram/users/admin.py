@@ -11,7 +11,7 @@ from .models import Subscription, User
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ["username", "email", "first_name", "last_name"]
-    list_display_links = ["username", "email", "first_name", "last_name"]
+    list_display_links = ["username"]
     search_fields = ["username", "email"]
     ordering = ["username"]
     empty_value_display = settings.EMPTY
@@ -20,7 +20,7 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ["user", "author"]
-    list_display_links = ["user", "author"]
+    list_display_links = ["user"]
     search_fields = [
         "author__username",
         "author__email",
