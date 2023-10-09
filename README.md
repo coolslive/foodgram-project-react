@@ -2,18 +2,18 @@
 # Проект Foodgram
 
 
-### Описание:
+## Описание:
 - Возможность делиться своими рецептами
 - Смотрите рецепты других пользователей
 - Добавляйте рецепты в избранное
 - Следите за тем, что добавили ваши друзья и коллеги
 
-### Технологии:
+## Технологии:
 - Python
 - Django
 - Docker
 
-### Установка:
+## Установка:
 
 
 1. Подготовка сервера:
@@ -44,5 +44,5 @@ sudo docker-compose exec server part in python manage.py loadmodels --path 'reci
 sudo docker-compose exec python backend manage.py loadmodels --path 'recipes/data/tags.json'
 ```
 
-### Автор:
+## Автор:
 Вячеслав Эрлих
